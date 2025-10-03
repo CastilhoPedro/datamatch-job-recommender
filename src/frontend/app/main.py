@@ -1,22 +1,32 @@
 from frontend.utils.tags import *
-from backend.services.handler_front import main
+from backend.services.handler_front import *
 import streamlit as st
 import pandas as pd
 import numpy as np
 
 
 
+
 class App:
     def __init__(self):
-        if "tags" not in st.session_state:
-            st.session_state["tags"] = []
-        if "input_tag" not in st.session_state:
-            st.session_state["input_tag"] = ""
-    
-    
-    def run(self):
         
-        st.header('Ativa Logística')
+        session_states_items = {
+            "tags": [],
+            "input_tag": "",
+            "show_loading_spinner": False,
+            "show_jobs_list": False,
+        }
+        
+        for k, v in session_states_items.items():
+            if k not in st.session_state:
+                st.session_state[k] = v
+
+        
+
+
+    def run(self):
+        # st.header('DataMatch')
+        st.header('Resumos de Cobrança Financeiro')
         
         col1, col2 = st.columns([4, 1])
         with col1:
@@ -24,13 +34,15 @@ class App:
             placeholder = 'Qual relatório quer tirar: Entradas e saídas, Ocupação'
             self.input_skills = st.text_input(label='Skills', placeholder=placeholder, label_visibility='collapsed', key="input_tag", on_change=add_tag)
         with col2:
-            self.button_execute = st.button("Pesquisar", type='primary', on_click=main)
+            if st.button("Pesquisar", type='primary'):
+                st.session_state['show_loading_spinner'] = True
+                
 
         col1, col2, col3 = st.columns(3)
         with col1:
             # placeholder='Localização'
             placeholder='Filial: ITA, VIX'
-            self.input_localiza = st.text_input(label= 'Local', placeholder=placeholder) #terá que ser trocado por uma selectbox, assim poderemos inserir a lista de estados. Acredito que o nível de granularidade de filtro será de estado, pelo menos para o MVP.
+            self.input_localiza = st.text_input(label= 'Local', placeholder=placeholder, label_visibility='hidden') #terá que ser trocado por uma selectbox, assim poderemos inserir a lista de estados. Acredito que o nível de granularidade de filtro será de estado, pelo menos para o MVP.
         with col2:
             dates = {
                 'Último dia': 1,
@@ -41,7 +53,7 @@ class App:
             }
             
             self.selected_date_display = st.selectbox(
-                'Date', dates.keys(), index=0
+                'Date', dates.keys(), index=0, label_visibility='hidden'
             )
         with col3:
             seniority = [
@@ -53,7 +65,7 @@ class App:
             # placeholder='Nível de Senioridade'
             placeholder = 'Depositante'
             self.selected_seniority_display = st.selectbox(
-                'Seniority', seniority, placeholder=placeholder, index=None
+                'Seniority', seniority, placeholder=placeholder, index=None, label_visibility= 'hidden'  
             )
 
 
@@ -81,55 +93,62 @@ class App:
                 if st.button("✖", key=f"remove_{i}"):
                     remove_tag(i)
                     st.rerun()
+        
+        
+        self.container = st.empty() #precisa "marcar" onde quer deixar os elementos, porque o streamlit só sai enfiando uma coisa embaixo da outra e é nois.
+        self.run_search_btn()
+    
+    
+    def run_search_btn(self):
+        self.load_jobs(
+            skills= st.session_state.tags, 
+            localization= self.input_localiza,
+            date= self.selected_date_display,
+            seniority= self.selected_seniority_display)
+        
+        self.show_jobs()
+    
+    def load_jobs(self, skills: list, localization: str, date: int, seniority: str):
+        if st.session_state['show_loading_spinner']:
+            label = "Carregando Relatórios..."
+            # label = "Carregando Vagas Mais Aderentes..."
+            with st.spinner(label, show_time=True):
+                
+                process_user_data(
+                    skills=skills,
+                    localization=localization,
+                    date=date,
+                    seniority=seniority
+                )
 
-
-
-
-
-#---------Tags da lista de skills do user -----------#
-
-
-
-## essas duas funções vao para alguma utils/helpers da vida
-
-
-# st.header('DataMatch')
-
-# jobs = [
-#     {
-#         "titulo": "Teste 1",
-#         "empresa": "Lugar 1",
-#         "local": "Little Farm, SP",
-#         "fonte": "portaVidro",
-#         "nivel": "Júnior",
-#     },
-#     {
-#         "titulo": "Teste 2",
-#         "empresa": "confidential",
-#         "local": "Barueri, SP",
-#         "fonte": "Link",
-#         "nivel": "Sênior",
-#     }
-# ]
-
-# for job in jobs:
-#     with st.container():
-#         st.markdown(f"""
-#         <div style="
-#             border: 1px solid #444;
-#             border-radius: 6px;
-#             padding: 11px;
-#             margin-bottom: 9px;
-#             background-color: #111;
-#         ">
-#             <h4 style="margin:0;">{job['titulo']}</h4>
-#             <p style="margin:0; color: #aaa;">{job['empresa']}</p>
-#             <p style="margin:0; font-size: 12px; color: #bbb;">Nível: {job['nivel']}</p>
-#             <p style="margin:0; font-size: 11px; color: #999;">{job['local']} • {job['fonte']}</p>
-#         </div>
-#         """, unsafe_allow_html=True)
-
-
+            st.session_state['show_loading_spinner'] = False
+            st.session_state['show_jobs_list'] = True
+    
+    def show_jobs(self):
+        if st.session_state['show_jobs_list']:
+            
+            self.jobs = get_jobs()
+            
+            with self.container.container(height=500):
+                for job in self.jobs:
+                    st.markdown(f"""
+            <a href="{job['link']}" target="_blank" style="text-decoration: none;">
+                <div style="
+                    border: 1px solid #444;
+                    border-radius: 6px;
+                    padding: 11px;
+                    margin-bottom: 9px;
+                    background-color: #111;
+                ">
+                    <h4 style="margin:0; color: #fff;">{job['titulo']}</h4>
+                    <p style="margin:0; color: #aaa;">{job['empresa']}</p>
+                    <p style="margin:0; font-size: 12px; color: #bbb;">Nível: {job['nivel']}</p>
+                    <p style="margin:0; font-size: 11px; color: #999;">{job['local']} • {job['fonte']}</p>
+                </div>
+            </a>
+            """, unsafe_allow_html=True)
+        
+        st.session_state['show_jobs_list'] = False
 
 
 if __name__ == '__main__':
