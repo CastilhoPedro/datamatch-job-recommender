@@ -1,7 +1,5 @@
-# Em models.py
-from sqlalchemy import create_engine, Column, Integer, String, Text, Float, DateTime, ForeignKey, UniqueConstraint, Boolean
+from sqlalchemy import Column, Integer, String, Text, Float, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy.dialects.postgresql import JSONB
 import datetime
 
 Base = declarative_base()
@@ -23,7 +21,7 @@ class Senioridade(Base):
 
 class Vetores(Base):
     __tablename__ = 'vetores'
-    id_vaga = Column(Integer, ForeignKey('vagas.id_vaga', ondelete='CASCADE'), primary_key=True)
+    id_vaga = Column(Integer, ForeignKey('vagas_raw.id_vaga', ondelete='CASCADE'), primary_key=True)
     id_palavra = Column(Integer, ForeignKey('vocabulario.id', ondelete='CASCADE'), primary_key=True)
     score_tfidf = Column(Float, nullable=False)
 
@@ -41,9 +39,10 @@ class VagasRaw(Base):
     data_publicacao = Column(String(15)) 
     processado = Column(Boolean, default=False)
     url = Column(Text, unique=True, nullable=False)
-    data_coleta = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
+    data_coleta = Column(DateTime(timezone=True), default=datetime.datetime.now)
 
 class VagasProcessed(Base):
+    __tablename__ = 'vagas_processed'
     id_vaga = Column(Integer, ForeignKey('vagas_raw.id_vaga'), primary_key=True)
     nome_vaga = Column(String(70), nullable=False)
     nome_empresa = Column(String(50))
