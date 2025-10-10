@@ -29,7 +29,7 @@ class Vetores(Base):
     vaga = relationship("VagasRaw")
     vocabulario = relationship("Vocabulario")
 
-class VagasRaw(Base):
+class RelsRaw(Base):
     __tablename__ = 'vagas_raw'
     id_vaga = Column(Integer, primary_key=True)
     nome_vaga = Column(String(70), nullable=False)
