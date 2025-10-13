@@ -2,6 +2,10 @@ import time
 
 
 def get_jobs():
+    # import pandas as pd
+    # df = pd.read_sql("SELECT * FROM vagas_raw", SessionLocal().bind)
+    # jobs = df.to_dict(orient="records")
+
     jobs = [
     {
         "titulo": "Histórico de Ocupação",
