@@ -26,29 +26,31 @@ class Vetores(Base):
     score_tfidf = Column(Float, nullable=False)
 
     
-    vaga = relationship("VagasRaw")
+    vaga = relationship("Vagas")
     vocabulario = relationship("Vocabulario")
 
-class VagasRaw(Base):
-    __tablename__ = 'vagas_raw'
+class Vagas(Base):
+    __tablename__ = 'vagas'
     id_vaga = Column(Integer, primary_key=True, autoincrement='auto')
     nome_vaga = Column(String(70), nullable=False)
     descricao_vaga = Column(Text, nullable=False)
-    nome_empresa = Column(String(50))
-    localizacao = Column(String(2)) #aqui ele ainda vai trazer a UF, na processed que vamos transformar a UF em número para deixar mais barato computacionalmente.
-    data_publicacao = Column(String(15)) 
+    nome_empresa = Column(String(50), nullable=False)
+    localizacao = Column(String(2), default= None, nullable= True) #aqui ele ainda vai trazer a UF, na processed que vamos transformar a UF em número para deixar mais barato computacionalmente.
+    data_publicacao = Column(DateTime(timezone=True), nullable=False)   
     processado = Column(Boolean, default=False)
     url = Column(Text, unique=True, nullable=False)
     data_coleta = Column(DateTime(timezone=True), default=datetime.datetime.now)
+    senioridade = Column(Integer, ForeignKey('senioridade.id'), default= None, nullable= True)
+    
 
 
     # eu realmente preciso de uma table separada para a vaga processada?
-class VagasProcessed(Base):
-    __tablename__ = 'vagas_processed'
-    id_vaga = Column(Integer, ForeignKey('vagas_raw.id_vaga'), primary_key=True)
-    nome_vaga = Column(String(70), nullable=False)
-    nome_empresa = Column(String(50))
-    senioridade = Column(Integer, ForeignKey('senioridade.id'))
-    localizacao = Column(Integer, ForeignKey('localizacao.id'))
-    data_publicacao = Column(DateTime(timezone=True))
-    url = Column(Text, unique=True, nullable=False)
+# class VagasProcessed(Base):
+#     __tablename__ = 'vagas_processed'
+#     id_vaga = Column(Integer, ForeignKey('vagas_raw.id_vaga'), primary_key=True)
+#     nome_vaga = Column(String(70), nullable=False)
+#     nome_empresa = Column(String(50))
+#     senioridade = Column(Integer, ForeignKey('senioridade.id'))
+#     localizacao = Column(Integer, ForeignKey('localizacao.id'))
+#     data_publicacao = Column(DateTime(timezone=True))
+#     url = Column(Text, unique=True, nullable=False)
