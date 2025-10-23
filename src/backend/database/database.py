@@ -1,5 +1,5 @@
-from backend.database.models import *
-from backend.database.connection import *
+from src.backend.database.models import *
+from src.backend.database.connection import *
 from sqlalchemy.exc import IntegrityError
 
 class Database:
@@ -22,8 +22,8 @@ class Database:
     
     # precisaremos fazer as funções para adicionar linhas e alrerar linhas (coluna 'processada' de false para true)
     @new_row
-    def add_vaga_raw(self, nome_vaga: str, descricao_vaga: str, nome_empresa: str, localizacao: str, url: str) -> VagasRaw:
-        return VagasRaw(
+    def add_vaga_raw(self, nome_vaga: str, descricao_vaga: str, nome_empresa: str, localizacao: str, url: str) -> Vagas:
+        return Vagas(
             nome_vaga= nome_vaga,
             descricao_vaga= descricao_vaga,
             nome_empresa= nome_empresa,
@@ -49,7 +49,7 @@ class Database:
 
     def update_vaga_to_processed(self, id_vaga):
         with SessionLocal() as db:
-            vaga = db.query(VagasRaw).filter(VagasRaw.id_vaga == id_vaga).first()
+            vaga = db.query(Vagas).filter(Vagas.id_vaga == id_vaga).first()
             vaga.processado = True
             db.commit()
 

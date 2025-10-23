@@ -21,7 +21,7 @@ class Senioridade(Base): #terá valores fixos adicionados automaticamente (jr, p
 
 class Vetores(Base):
     __tablename__ = 'vetores'
-    id_vaga = Column(Integer, ForeignKey('vagas_raw.id_vaga', ondelete='CASCADE'), primary_key=True)
+    id_vaga = Column(Integer, ForeignKey('vagas.id_vaga', ondelete='CASCADE'), primary_key=True)
     id_palavra = Column(Integer, ForeignKey('vocabulario.id', ondelete='CASCADE'), primary_key=True)
     score_tfidf = Column(Float, nullable=False)
 
@@ -35,22 +35,10 @@ class Vagas(Base):
     nome_vaga = Column(String(70), nullable=False)
     descricao_vaga = Column(Text, nullable=False)
     nome_empresa = Column(String(50), nullable=False)
-    localizacao = Column(String(2), default= None, nullable= True) #aqui ele ainda vai trazer a UF, na processed que vamos transformar a UF em número para deixar mais barato computacionalmente.
+    localizacao = Column(String(2), default= None, nullable= True) 
     data_publicacao = Column(DateTime(timezone=True), nullable=False)   
     processado = Column(Boolean, default=False)
     url = Column(Text, unique=True, nullable=False)
     data_coleta = Column(DateTime(timezone=True), default=datetime.datetime.now)
     senioridade = Column(Integer, ForeignKey('senioridade.id'), default= None, nullable= True)
-    
-
-
-    # eu realmente preciso de uma table separada para a vaga processada?
-# class VagasProcessed(Base):
-#     __tablename__ = 'vagas_processed'
-#     id_vaga = Column(Integer, ForeignKey('vagas_raw.id_vaga'), primary_key=True)
-#     nome_vaga = Column(String(70), nullable=False)
-#     nome_empresa = Column(String(50))
-#     senioridade = Column(Integer, ForeignKey('senioridade.id'))
-#     localizacao = Column(Integer, ForeignKey('localizacao.id'))
-#     data_publicacao = Column(DateTime(timezone=True))
-#     url = Column(Text, unique=True, nullable=False)
+    id_localizacao = Column(Integer, ForeignKey('localizacao.id'), default= None, nullable= True)
