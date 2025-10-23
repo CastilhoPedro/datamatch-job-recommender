@@ -7,7 +7,7 @@ class Database:
         Base.metadata.create_all(bind= engine)
 
     @staticmethod
-    def new_row(func):
+    def create_row(func):
         def wrapper(self, *args, **kwargs):
             with SessionLocal() as db:
                 new_row = func(self, *args, **kwargs)
@@ -21,7 +21,7 @@ class Database:
         return wrapper
     
     # precisaremos fazer as funções para adicionar linhas e alrerar linhas (coluna 'processada' de false para true)
-    @new_row
+    @create_row
     def add_vaga_raw(self, nome_vaga: str, descricao_vaga: str, nome_empresa: str, localizacao: str, url: str) -> Vagas:
         return Vagas(
             nome_vaga= nome_vaga,
@@ -31,20 +31,15 @@ class Database:
             url= url
         )
 
-    @new_row
-    def add_vocabulario(self, palavra: str) -> Vocabulario: # talvez deixe de existir
-        return Vocabulario(palavra= palavra)
-
-    @new_row
+    @create_row
     def add_senioridade(self, nivel: str) -> Senioridade:  # talvez deixe de existir
         return Senioridade(nivel= nivel)
     
-    @new_row
-    def add_vetor(self, id_vaga: int, id_palavra: int, scoretfidf: float) -> Vetores:
+    @create_row
+    def add_vetor(self, id_vaga: int, vetor: float) -> Vetores:
         return Vetores(
             id_vaga=  id_vaga, 
-            id_palavra= id_palavra, 
-            scoretfidf= scoretfidf
+            vetor= vetor
         )
 
     def update_vaga_to_processed(self, id_vaga):
@@ -56,3 +51,4 @@ class Database:
 
 if __name__ == '__main__':
     db = Database()
+

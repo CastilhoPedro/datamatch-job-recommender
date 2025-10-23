@@ -1,13 +1,9 @@
 from sqlalchemy import Column, Integer, String, Text, Float, DateTime, ForeignKey, Boolean
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import declarative_base, relationship
 import datetime
 
 Base = declarative_base()
-
-class Vocabulario(Base):
-    __tablename__ = 'vocabulario'
-    id = Column(Integer, primary_key=True, autoincrement='auto') 
-    palavra = Column(Text, nullable=False, unique=True)
 
 class Localizacao(Base): # terá valores fixos adicionados automaticamente (as UFs: SP, RJ, BA)
     __tablename__ = 'localizacao'
@@ -22,12 +18,7 @@ class Senioridade(Base): #terá valores fixos adicionados automaticamente (jr, p
 class Vetores(Base):
     __tablename__ = 'vetores'
     id_vaga = Column(Integer, ForeignKey('vagas.id_vaga', ondelete='CASCADE'), primary_key=True)
-    id_palavra = Column(Integer, ForeignKey('vocabulario.id', ondelete='CASCADE'), primary_key=True)
-    score_tfidf = Column(Float, nullable=False)
-
-    
-    vaga = relationship("Vagas")
-    vocabulario = relationship("Vocabulario")
+    vetor = Column(JSONB, nullable=False)
 
 class Vagas(Base):
     __tablename__ = 'vagas'
