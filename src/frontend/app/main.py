@@ -1,9 +1,6 @@
-from frontend.utils.tags import *
-from backend.services.handler_front import *
+from src.frontend.utils.tags import *
+from src.backend.services.handler_front import *
 import streamlit as st
-import pandas as pd
-import numpy as np
-
 
 
 
