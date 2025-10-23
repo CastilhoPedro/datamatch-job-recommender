@@ -24,10 +24,10 @@ A arquitetura do projeto integra diversas ferramentas e conceitos da engenharia 
 
 | Categoria             | Ferramentas e Conceitos                                     |
 | :-------------------- | :---------------------------------------------------------- |
-| **Coleta de Dados** | Python (Scrapy, BeautifulSoup, Selenium) |
-| **Processamento e NLP** | Scikit-learn (TF-IDF, Similaridade de Cosseno)            |
-| **Banco de Dados** | MySQL                                                      |
-| **Interface (Frontend)**| Streamlit                                                |
+| **Coleta de Dados** | Scrapy, BeautifulSoup, Selenium                               |
+| **Processamento e NLP** | Scikit-learn, Spacy                                       |
+| **Banco de Dados** | PostgreSQL                                                     |
+| **Interface (Frontend)**| Streamlit                                                 |
 | **Conceitos Base** | Web Scraping, Processamento de Linguagem Natural (NLP), Sistemas de Recomendação |
 
 ## 🚀 Como Executar o Projeto
@@ -37,14 +37,41 @@ A arquitetura do projeto integra diversas ferramentas e conceitos da engenharia 
 ## 📁 Estrutura do Projeto
 
 A estrutura de diretórios planejada para organizar o código e os artefatos do projeto é a seguinte:
+
 ```
-/datamatch
-|
-|-- /scrapers           
-|-- /app                
-|-- /notebooks          
-|-- requirements.txt    
-|-- ...
+datamatch-job-recommender
+├─ notebooks
+│  └─ 01_NLP_development.ipynb
+├─ README.md
+├─ requirements.txt
+└─ src
+   ├─ backend
+   │  ├─ config
+   │  │  ├─ settings.py
+   │  │  └─ __init__.py
+   │  ├─ database
+   │  │  ├─ connection.py
+   │  │  ├─ database.py
+   │  │  ├─ models.py
+   │  │  └─ __init__.py
+   │  ├─ scrapers
+   │  │  └─ __init__.py
+   │  ├─ services
+   │  │  ├─ handler_front.py
+   │  │  └─ __init__.py
+   │  ├─ utils
+   │  │  └─ __init__.py
+   │  └─ __init__.py
+   ├─ frontend
+   │  ├─ app
+   │  │  ├─ main.py
+   │  │  └─ __init__.py
+   │  ├─ utils
+   │  │  ├─ tags.py
+   │  │  └─ __init__.py
+   │  └─ __init__.py
+   └─ __init__.py
+
 ```
 
 
