@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, Text, Float, DateTime, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base
 import datetime
 
 Base = declarative_base()
@@ -27,7 +27,7 @@ class Vagas(Base):
     descricao_vaga = Column(Text, nullable=False)
     nome_empresa = Column(String(50), nullable=False)
     localizacao = Column(String(2), default= None, nullable= True) 
-    data_publicacao = Column(DateTime(timezone=True), nullable=False)   
+    data_publicacao = Column(String(10), nullable=False)   
     processado = Column(Boolean, default=False)
     url = Column(Text, unique=True, nullable=False)
     data_coleta = Column(DateTime(timezone=True), default=datetime.datetime.now)
