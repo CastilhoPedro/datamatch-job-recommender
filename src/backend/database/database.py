@@ -51,12 +51,12 @@ class Database:
 
     def read_vaga_description_list(self) -> list[str]:
         with SessionLocal() as db:
-            descr_list = db.query(Vagas.descricao_vaga).where(Vagas.processado == False)
-            return [i[0] for i in descr_list.all()]
+            descr_list = db.query(Vagas.id_vaga, Vagas.descricao_vaga).where(Vagas.processado == False) # no futuro precisaremos fazer uma função para extrair os vetores das vagas 
+            return [i for i in descr_list.all()]
 
 if __name__ == '__main__':
     db = Database()
-    db.read_vaga_description_list()
+    print(db.read_vaga_description_list())
     
     
     

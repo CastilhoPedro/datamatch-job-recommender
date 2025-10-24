@@ -22,13 +22,11 @@ class App:
 
 
     def run(self):
-        # st.header('DataMatch')
-        st.header('Resumos de Cobrança Financeiro')
+        st.header('DataMatch')
         
         col1, col2 = st.columns([4, 1])
         with col1:
-            # placeholder='Insira as Habilidades. Ex: Python, Azure, Looker'
-            placeholder = 'Qual relatório quer tirar: Entradas e saídas, Ocupação'
+            placeholder='Insira as Habilidades. Ex: Python, Azure, Looker'
             self.input_skills = st.text_input(label='Skills', placeholder=placeholder, label_visibility='collapsed', key="input_tag", on_change=add_tag)
         with col2:
             if st.button("Pesquisar", type='primary'):
@@ -37,8 +35,7 @@ class App:
 
         col1, col2, col3 = st.columns(3)
         with col1:
-            # placeholder='Localização'
-            placeholder='Filial: ITA, VIX'
+            placeholder='Localização'
             self.input_localiza = st.text_input(label= 'Local', placeholder=placeholder, label_visibility='hidden') #terá que ser trocado por uma selectbox, assim poderemos inserir a lista de estados. Acredito que o nível de granularidade de filtro será de estado, pelo menos para o MVP.
         with col2:
             dates = {
@@ -59,8 +56,7 @@ class App:
                 'Pleno',
                 'Sênior'
             ]
-            # placeholder='Nível de Senioridade'
-            placeholder = 'Depositante'
+            placeholder='Nível de Senioridade'
             self.selected_seniority_display = st.selectbox(
                 'Seniority', seniority, placeholder=placeholder, index=None, label_visibility= 'hidden'  
             )
@@ -107,8 +103,9 @@ class App:
     
     def load_jobs(self, skills: list, localization: str, date: int, seniority: str):
         if st.session_state['show_loading_spinner']:
-            label = "Carregando Relatórios..."
-            # label = "Carregando Vagas Mais Aderentes..."
+            
+            label = "Carregando Vagas Mais Aderentes..."
+            
             with st.spinner(label, show_time=True):
                 
                 process_user_data(
