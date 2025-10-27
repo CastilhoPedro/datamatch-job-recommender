@@ -4,7 +4,10 @@ from sqlalchemy.exc import IntegrityError
 
 class Database:
     def __init__(self):
-        Base.metadata.create_all(bind= engine)
+        try:
+            Base.metadata.create_all(bind= engine)
+        except UnicodeDecodeError:
+            raise UnicodeDecodeError("Houve um problema ao conectar ao banco, por favor verifique se o mesmo está ativado. Caso esteja, cheque as credenciais no arquivo de ambiente")
 
     @staticmethod
     def create_row(func):
@@ -20,7 +23,7 @@ class Database:
                     print('ERRO de integridade do banco')
         return wrapper
     
-    # precisaremos fazer as funções para adicionar linhas e alrerar linhas (coluna 'processada' de false para true)
+
     @create_row
     def add_vaga(self, nome_vaga: str, descricao_vaga: str, nome_empresa: str, localizacao: str, url: str, data_publicacao: datetime) -> Vagas:
         return Vagas(
@@ -51,8 +54,37 @@ class Database:
 
     def read_vaga_description_list(self) -> list[str]:
         with SessionLocal() as db:
-            descr_list = db.query(Vagas.id_vaga, Vagas.descricao_vaga).where(Vagas.processado == False) # no futuro precisaremos fazer uma função para extrair os vetores das vagas 
-            return [i for i in descr_list.all()]
+            descr_list = db.query(Vagas.id_vaga, Vagas.descricao_vaga).where(
+                Vagas.processado == False, 
+                ) 
+            return [i for i in descr_list.all()] 
+    
+    
+    def read_vagas_list(self, localization: str, seniority: str, date: datetime, ids_list: list) -> list[str]:
+        with SessionLocal() as db:
+            # descr_list = db.query(Vagas).join(Localizacao, Vagas.id_localizacao == Localizacao.id).join(Senioridade,Vagas.senioridade == Senioridade.id).where(
+            #     Vagas.processado == False, 
+            #     Vagas.data_publicacao >= date, 
+            #     # Localizacao.uf == localization,
+            #     # Senioridade.nivel == seniority,
+            #     Vagas.id_vaga.in_(ids_list)
+            #     ) 
+            descr_list = db.query(Vagas).where(
+                Vagas.processado == False, 
+                Vagas.data_publicacao >= date, 
+                Vagas.id_vaga.in_(ids_list)
+            )
+            
+            return [
+                {
+                "titulo": i.nome_vaga,
+                "empresa": i.nome_empresa,
+                "local": "Teste",
+                "fonte": "Teste",
+                "nivel": i.senioridade,
+                "link": i.url
+                } 
+                for i in descr_list.all()]   # no futuro precisaremos fazer uma função para extrair os vetores das vagas 
 
 if __name__ == '__main__':
     db = Database()

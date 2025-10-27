@@ -1,3 +1,7 @@
+import datetime
+from datetime import date
+
+
 skills_list = [
     "Power BI", 
     "Power Automate", 
@@ -33,4 +37,19 @@ ufs_dict = {
     "SP": "São Paulo",
     "SE": "Sergipe",
     "TO": "Tocantins"
+}
+
+seniority = [
+    'Estágio',
+    'Júnior',
+    'Pleno',
+    'Sênior'
+]
+
+dates = {
+    'Último dia': date.today() - datetime.timedelta(days=1),
+    'Últimos 3 dias': date.today() - datetime.timedelta(days=3),
+    'Últimos 7 dias': date.today() - datetime.timedelta(days=7),
+    'Últimos 15 dias': date.today() - datetime.timedelta(days=15),
+    'Últimos 30 dias': date.today() - datetime.timedelta(days=300)
 }

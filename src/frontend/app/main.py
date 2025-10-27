@@ -1,5 +1,6 @@
 from src.frontend.utils.tags import *
 from src.backend.services.handler_front import *
+from src.utils.helper import *
 import streamlit as st
 
 
@@ -38,24 +39,10 @@ class App:
             placeholder='Localização'
             self.input_localiza = st.text_input(label= 'Local', placeholder=placeholder, label_visibility='hidden') #terá que ser trocado por uma selectbox, assim poderemos inserir a lista de estados. Acredito que o nível de granularidade de filtro será de estado, pelo menos para o MVP.
         with col2:
-            dates = {
-                'Último dia': 1,
-                'Últimos 3 dias': 3,
-                'Últimos 7 dias': 7,
-                'Últimos 15 dias': 15,
-                'Últimos 30 dias': 30
-            }
-            
             self.selected_date_display = st.selectbox(
                 'Date', dates.keys(), index=0, label_visibility='hidden'
             )
         with col3:
-            seniority = [
-                'Estágio',
-                'Júnior',
-                'Pleno',
-                'Sênior'
-            ]
             placeholder='Nível de Senioridade'
             self.selected_seniority_display = st.selectbox(
                 'Seniority', seniority, placeholder=placeholder, index=None, label_visibility= 'hidden'  
@@ -93,13 +80,13 @@ class App:
     
     
     def run_search_btn(self):
-        self.load_jobs(
+        user_bundle = self.load_jobs(
             skills= st.session_state.tags, 
             localization= self.input_localiza,
             date= self.selected_date_display,
             seniority= self.selected_seniority_display)
         
-        self.show_jobs()
+        self.show_jobs(user_bundle)
     
     def load_jobs(self, skills: list, localization: str, date: int, seniority: str):
         if st.session_state['show_loading_spinner']:
@@ -108,7 +95,7 @@ class App:
             
             with st.spinner(label, show_time=True):
                 
-                process_user_data(
+                user_bundle = process_user_data(
                     skills=skills,
                     localization=localization,
                     date=date,
@@ -117,14 +104,13 @@ class App:
 
             st.session_state['show_loading_spinner'] = False
             st.session_state['show_jobs_list'] = True
+            return user_bundle
     
-    def show_jobs(self):
+    def show_jobs(self, jobs):
         if st.session_state['show_jobs_list']:
             
-            self.jobs = get_jobs()
-            
             with self.container.container(height=500):
-                for job in self.jobs:
+                for job in jobs:
                     st.markdown(f"""
             <a href="{job['link']}" target="_blank" style="text-decoration: none;">
                 <div style="
@@ -142,7 +128,7 @@ class App:
             </a>
             """, unsafe_allow_html=True)
         
-        st.session_state['show_jobs_list'] = False
+        # st.session_state['show_jobs_list'] = False # Gera bug de sumir com o ranking após qualquer interação na tela.
 
 
 if __name__ == '__main__':

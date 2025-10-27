@@ -1,5 +1,9 @@
 import time
+from src.utils.helper import dates
+from src.backend.processing.vectorizer import Vectorizer
+from src.backend.database.database import Database
 
+db = Database()
 
 def get_jobs():
     # import pandas as pd
@@ -59,6 +63,28 @@ def get_jobs():
         ]
     return jobs
 
-def process_user_data(skills: list, localization: str, date: int, seniority: str):
-    time.sleep(2.4)
-    print(f" A lista de skills do usuário são: {[f"{skill}" for skill in skills]}\n Usuário reside em: {localization}\n Quantidade de dias atrás: {date}\n Nível de senioridade: {seniority}")
+def process_user_data(skills: list, localization: str, date: str, seniority: str):
+    # time.sleep(2.4)
+    date = dates[date]
+    
+    vec = Vectorizer()
+    list_jobs = vec.get_vagas_rank(' '.join(skills))
+    
+    jobs = db.read_vagas_list(
+        date=date,
+        ids_list=list_jobs,
+        localization=localization,
+        seniority=seniority
+    )
+    
+    return jobs
+
+
+if __name__ == '__main__':
+    teste = process_user_data(
+        skills=['python', 'sql'],
+        localization='SP',
+        date='Últimos 30 dias',
+        seniority='Júnior'
+    )
+    print(teste)
