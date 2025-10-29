@@ -13,6 +13,7 @@ class App:
             "input_tag": "",
             "show_loading_spinner": False,
             "show_jobs_list": False,
+            "search_clicked": False
         }
         
         for k, v in session_states_items.items():
@@ -37,10 +38,13 @@ class App:
         col1, col2, col3 = st.columns(3)
         with col1:
             placeholder='Localização'
-            self.input_localiza = st.text_input(label= 'Local', placeholder=placeholder, label_visibility='hidden') #terá que ser trocado por uma selectbox, assim poderemos inserir a lista de estados. Acredito que o nível de granularidade de filtro será de estado, pelo menos para o MVP.
+            self.selected_localiza_display = st.selectbox(
+                'Local', ufs_dict.keys(), index=None, label_visibility='hidden', placeholder=placeholder
+            ) 
         with col2:
+            placeholder = 'Data da Publicação'
             self.selected_date_display = st.selectbox(
-                'Date', dates.keys(), index=0, label_visibility='hidden'
+                'Data', dates.keys(), index=None, label_visibility='hidden', placeholder=placeholder
             )
         with col3:
             placeholder='Nível de Senioridade'
@@ -76,17 +80,29 @@ class App:
         
         
         self.container = st.empty() #precisa "marcar" onde quer deixar os elementos, porque o streamlit só sai enfiando uma coisa embaixo da outra e é nois.
-        self.run_search_btn()
+        
+        
+        if st.session_state['search_clicked']:
+            self.run_search_btn()
+            st.session_state['search_clicked'] = False
     
     
     def run_search_btn(self):
-        user_bundle = self.load_jobs(
-            skills= st.session_state.tags, 
-            localization= self.input_localiza,
-            date= self.selected_date_display,
-            seniority= self.selected_seniority_display)
         
-        self.show_jobs(user_bundle)
+        # print(st.session_state.tags, self.selected_localiza_display, self.selected_date_display, self.selected_seniority_display)
+        if not any(i is None for i in [st.session_state.tags, self.selected_localiza_display, self.selected_date_display, self.selected_seniority_display]):
+            user_bundle = self.load_jobs(
+                skills= st.session_state.tags, 
+                localization= self.selected_localiza_display,
+                date= self.selected_date_display,
+                seniority= self.selected_seniority_display)
+        else:
+            st.error("Por favor, preencha todos os campos antes de prosseguir")
+            user_bundle = None
+        
+        if user_bundle is not None:
+            self.show_jobs(user_bundle)
+        
     
     def load_jobs(self, skills: list, localization: str, date: int, seniority: str):
         if st.session_state['show_loading_spinner']:
@@ -94,17 +110,21 @@ class App:
             label = "Carregando Vagas Mais Aderentes..."
             
             with st.spinner(label, show_time=True):
-                
+                import time
+                time.sleep(3)
                 user_bundle = process_user_data(
                     skills=skills,
                     localization=localization,
                     date=date,
                     seniority=seniority
                 )
-
-            st.session_state['show_loading_spinner'] = False
-            st.session_state['show_jobs_list'] = True
-            return user_bundle
+            if user_bundle is None:
+                st.error("Não foi possível encontrar nenhuma vaga")
+                return None
+            else:
+                st.session_state['show_loading_spinner'] = False
+                st.session_state['show_jobs_list'] = True
+                return user_bundle
     
     def show_jobs(self, jobs):
         if st.session_state['show_jobs_list']:
