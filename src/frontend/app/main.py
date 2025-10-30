@@ -1,4 +1,4 @@
-from src.frontend.utils.tags import *
+from src.frontend.utils.commom import *
 from src.backend.services.handler_front import *
 from src.utils.helper import *
 import streamlit as st
@@ -33,7 +33,7 @@ class App:
         with col2:
             if st.button("Pesquisar", type='primary'):
                 st.session_state['show_loading_spinner'] = True
-                
+                st.session_state['search_clicked'] = True
 
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -64,8 +64,8 @@ class App:
                         padding:6px 10px;
                         margin:4px;
                         border-radius:999px;
-                        background:#285790;
-                        border:2px solid #2FE552;
+                        background:#2B2C36;
+                        border:2px solid #F74C4C;
                         font-size:12px;
                         color:white;">
                         {tag}
@@ -89,16 +89,15 @@ class App:
     
     def run_search_btn(self):
         
-        # print(st.session_state.tags, self.selected_localiza_display, self.selected_date_display, self.selected_seniority_display)
-        if not any(i is None for i in [st.session_state.tags, self.selected_localiza_display, self.selected_date_display, self.selected_seniority_display]):
+        user_bundle = None
+        
+        if check_inputs(st.session_state.tags, self.selected_localiza_display, self.selected_date_display, self.selected_seniority_display):
             user_bundle = self.load_jobs(
                 skills= st.session_state.tags, 
                 localization= self.selected_localiza_display,
                 date= self.selected_date_display,
                 seniority= self.selected_seniority_display)
-        else:
-            st.error("Por favor, preencha todos os campos antes de prosseguir")
-            user_bundle = None
+        
         
         if user_bundle is not None:
             self.show_jobs(user_bundle)
@@ -126,29 +125,32 @@ class App:
                 st.session_state['show_jobs_list'] = True
                 return user_bundle
     
-    def show_jobs(self, jobs):
+    def show_jobs(self, jobs: list):
         if st.session_state['show_jobs_list']:
-            
-            with self.container.container(height=500):
-                for job in jobs:
-                    st.markdown(f"""
-            <a href="{job['link']}" target="_blank" style="text-decoration: none;">
-                <div style="
-                    border: 1px solid #444;
-                    border-radius: 6px;
-                    padding: 11px;
-                    margin-bottom: 9px;
-                    background-color: #111;
-                ">
-                    <h4 style="margin:0; color: #fff;">{job['titulo']}</h4>
-                    <p style="margin:0; color: #aaa;">{job['empresa']}</p>
-                    <p style="margin:0; font-size: 12px; color: #bbb;">Nível: {job['nivel']}</p>
-                    <p style="margin:0; font-size: 11px; color: #999;">{job['local']} • {job['fonte']}</p>
-                </div>
-            </a>
-            """, unsafe_allow_html=True)
+            if len(jobs) > 0:
+                with self.container.container(height=500):
+                    for job in jobs:
+                        
+                        st.markdown(f"""
+                <a href="{"https://" + job['link']}" target="_blank" style="text-decoration: none;">  
+                    <div style="
+                        border: 1px solid #444;
+                        border-radius: 6px;
+                        padding: 11px;
+                        margin-bottom: 9px;
+                        background-color: #111;
+                    ">
+                        <h4 style="margin:0; color: #fff;">{job['titulo']}</h4>
+                        <p style="margin:0; color: #aaa;">{job['empresa']}</p>
+                        <p style="margin:0; font-size: 12px; color: #bbb;">Nível: {job['nivel']}</p>
+                        <p style="margin:0; font-size: 11px; color: #999;">{job['local']} • {job['fonte']}</p>
+                    </div>
+                </a>
+                """, unsafe_allow_html=True)
+            else:
+                st.write("Nenhuma vaga encontrada...")
         
-        # st.session_state['show_jobs_list'] = False # Gera bug de sumir com o ranking após qualquer interação na tela.
+        
 
 
 if __name__ == '__main__':

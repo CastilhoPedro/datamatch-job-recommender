@@ -18,13 +18,14 @@ class Vectorizer:
                         max_features=2000,          
                         ngram_range=(1, 2),         
                         lowercase=True,             
-                        min_df=2,                   
+                        min_df=1,             # Depois será necessário aumentar
                         max_df=0.8,
                         sublinear_tf= True
                     )
             
             db = Database()
             descriptions = db.read_vaga_description_list()
+            
             self.id_list = [i[0] for i in descriptions]
             
             descriptions = [i[1] for i in descriptions]

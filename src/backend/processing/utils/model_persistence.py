@@ -1,9 +1,9 @@
 import joblib
 import os 
+import glob
 
-
-_model_path = "src/backend/processing/utils/model.joblib"
-
+_model_path = os.path.join(os.getcwd(), "src/backend/processing/utils/model.joblib")
+print(_model_path)
 def save_model(model, matrix, ids):
     data_bundle = {
         'model': model,

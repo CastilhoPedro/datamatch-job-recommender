@@ -64,7 +64,7 @@ def get_jobs():
     return jobs
 
 def process_user_data(skills: list, localization: str, date: str, seniority: str):
-    # time.sleep(2.4)
+    
     date = dates[date]
     
     vec = Vectorizer()

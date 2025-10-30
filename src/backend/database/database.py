@@ -25,12 +25,11 @@ class Database:
     
 
     @create_row
-    def add_vaga(self, nome_vaga: str, descricao_vaga: str, nome_empresa: str, localizacao: str, url: str, data_publicacao: datetime) -> Vagas:
+    def add_vaga(self, nome_vaga: str, descricao_vaga: str, nome_empresa: str, url: str, data_publicacao: datetime) -> Vagas:
         return Vagas(
             nome_vaga= nome_vaga,
             descricao_vaga= descricao_vaga,
             nome_empresa= nome_empresa,
-            localizacao= localizacao,
             url= url,
             data_publicacao= data_publicacao
         )
@@ -92,49 +91,45 @@ if __name__ == '__main__':
     
     
     
-# db.add_vaga(
-#     nome_vaga='cientista de dados pleno',
-#     descricao_vaga='procuramos um cientista de dados pleno com experiência em machine learning, python, pandas e visualização de dados. desejável conhecimento em cloud (aws ou gcp).',
-#     nome_empresa='tech insights',
-#     localizacao='RJ',
-#     url='www.techinsights.com/vagas/123',
-#     data_publicacao= datetime.date(year=2025, day=12, month=2)
-# )
+        
+    # db.add_vaga(
+    #     nome_vaga='cientista de dados pleno',
+    #     descricao_vaga='procuramos um cientista de dados pleno com experiência em machine learning, python, pandas e visualização de dados. desejável conhecimento em cloud (aws ou gcp).',
+    #     nome_empresa='tech insights',
+    #     url='www.techinsights.com/vagas/123',
+    #     data_publicacao= datetime.date(year=2025, day=12, month=2)
+    # )
 
-#     db.add_vaga(
-#         nome_vaga='engenheiro de dados sênior',
-#         descricao_vaga='responsável pela construção de pipelines de dados e integrações. necessário domínio de sql, python, spark e ferramentas de orquestração como airflow.',
-#         nome_empresa='dataflow solutions',
-#         localizacao='MG',
-#         url='www.dataflow.com.br/vagas/engenheiro-senior',
-#         data_publicacao= datetime.date(year=2025, day=12, month=3)
-#     )
+    # db.add_vaga(
+    #     nome_vaga='engenheiro de dados sênior',
+    #     descricao_vaga='responsável pela construção de pipelines de dados e integrações. necessário domínio de sql, python, spark e ferramentas de orquestração como airflow.',
+    #     nome_empresa='dataflow solutions',
+    #     url='www.dataflow.com.br/vagas/engenheiro-senior',
+    #     data_publicacao= datetime.date(year=2025, day=12, month=3)
+    # )
 
-#     db.add_vaga(
-#         nome_vaga='analista de business intelligence',
-#         descricao_vaga='buscamos um analista de BI para criar dashboards e relatórios. é essencial conhecimento em power bi, sql e modelagem de dados.',
-#         nome_empresa='global analytics',
-#         localizacao='SP',
-#         url='www.globalanalytics.com/jobs/bi-analyst',
-#         data_publicacao= datetime.date(year=2025, day=12, month=5)
-#     )
+    # db.add_vaga(
+    #     nome_vaga='analista de business intelligence',
+    #     descricao_vaga='buscamos um analista de BI para criar dashboards e relatórios. é essencial conhecimento em power bi, sql e modelagem de dados.',
+    #     nome_empresa='global analytics',
+    #     url='www.globalanalytics.com/jobs/bi-analyst',
+    #     data_publicacao= datetime.date(year=2025, day=12, month=5)
+    # )
 
-#     db.add_vaga(
-#         nome_vaga='analista de dados jr',
-#         descricao_vaga='vaga para analista de dados jr com foco em marketing digital. necessário excel avançado e noções de python e google analytics.',
-#         nome_empresa='growth lab',
-#         localizacao='PR',
-#         url='www.growthlab.com/vagas/analista-dados',
-#         data_publicacao= datetime.date(year=2025, day=11, month=2)
-#     )
+    # db.add_vaga(
+    #     nome_vaga='analista de dados jr',
+    #     descricao_vaga='vaga para analista de dados jr com foco em marketing digital. necessário excel avançado e noções de python e google analytics.',
+    #     nome_empresa='growth lab',
+    #     url='www.growthlab.com/vagas/analista-dados',
+    #     data_publicacao= datetime.date(year=2025, day=11, month=2)
+    # )
 
-#     db.add_vaga(
-#         nome_vaga='engenheiro de machine learning',
-#         descricao_vaga='estamos em busca de um engenheiro de machine learning para desenvolver modelos preditivos e sistemas de recomendação. é preciso dominar python, sklearn e mlops.',
-#         nome_empresa='future ai',
-#         localizacao='RS',
-#         url='www.futureai.com/carreiras/ml-engineer',
-#         data_publicacao= datetime.date(year=2025, day=22, month=2)
-#     )
+    # db.add_vaga(
+    #     nome_vaga='engenheiro de machine learning',
+    #     descricao_vaga='estamos em busca de um engenheiro de machine learning para desenvolver modelos preditivos e sistemas de recomendação. é preciso dominar python, sklearn e mlops.',
+    #     nome_empresa='future ai',
+    #     url='www.futureai.com/carreiras/ml-engineer',
+    #     data_publicacao= datetime.date(year=2025, day=22, month=2)
+    # )
 
 
