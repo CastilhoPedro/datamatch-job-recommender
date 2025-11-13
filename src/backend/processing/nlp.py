@@ -24,4 +24,3 @@ class NLP:
         lemmas = [lemma.replace("_", " ") for lemma in lemmas]
 
         return " ".join(lemmas)
-

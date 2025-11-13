@@ -41,7 +41,8 @@ A estrutura de diretórios planejada para organizar o código e os artefatos do 
 ```
 datamatch-job-recommender
 ├─ notebooks
-│  └─ 01_NLP_development.ipynb
+│  ├─ 01_NLP_development.ipynb
+│  └─ 02_Scraper_development.ipynb
 ├─ README.md
 ├─ requirements.txt
 └─ src
@@ -58,11 +59,13 @@ datamatch-job-recommender
    │  │  ├─ nlp.py
    │  │  ├─ utils
    │  │  │  ├─ model_persistence.py
-   │  │  │  ├─ vector.joblib
    │  │  │  └─ __init__.py
    │  │  ├─ vectorizer.py
    │  │  └─ __init__.py
    │  ├─ scrapers
+   │  │  ├─ common.py
+   │  │  ├─ glassdoor.py
+   │  │  ├─ linkedin.py
    │  │  └─ __init__.py
    │  ├─ services
    │  │  ├─ handler_front.py
@@ -75,7 +78,7 @@ datamatch-job-recommender
    │  │  ├─ main.py
    │  │  └─ __init__.py
    │  ├─ utils
-   │  │  ├─ tags.py
+   │  │  ├─ commom.py
    │  │  └─ __init__.py
    │  └─ __init__.py
    ├─ utils
@@ -93,4 +96,5 @@ Embora o algoritmo inicial seja baseado em TF-IDF, o plano de longo prazo inclui
 * **Migração para Modelos Contextuais:** Evoluir o algoritmo de matching para modelos de linguagem mais avançados, como o BERT, para capturar melhor o contexto e a semântica das descrições das vagas.
 * **Personalização com Feedback:** Utilizar os dados de feedback (Likes/Dislikes) para treinar um modelo de recomendação mais personalizado.
 * **Otimização de Performance:** Implementar técnicas de indexação para garantir que o sistema continue performático à medida que a base de vagas crescer.
+
 

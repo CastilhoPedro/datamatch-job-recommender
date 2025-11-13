@@ -140,13 +140,29 @@ class App:
                         margin-bottom: 9px;
                         background-color: #111;
                     ">
-                        <h4 style="margin:0; color: #fff;">{job['titulo']}</h4>
-                        <p style="margin:0; color: #aaa;">{job['empresa']}</p>
-                        <p style="margin:0; font-size: 12px; color: #bbb;">Nível: {job['nivel']}</p>
-                        <p style="margin:0; font-size: 11px; color: #999;">{job['local']} • {job['fonte']}</p>
+                        <h4 style="margin:0; color: #fff;">{job['titulo'].capitalize()}</h4>
+                        <p style="margin:0; color: #aaa;">{job['empresa'].capitalize()}</p>
+                        <p style="margin:0; font-size: 12px; color: #bbb;">Nível: Pleno</p>
+                        <p style="margin:0; font-size: 11px; color: #999;">SP • Linkedin</p>
                     </div>
                 </a>
                 """, unsafe_allow_html=True)
+                #         st.markdown(f"""
+                # <a href="{"https://" + job['link']}" target="_blank" style="text-decoration: none;">  
+                #     <div style="
+                #         border: 1px solid #444;
+                #         border-radius: 6px;
+                #         padding: 11px;
+                #         margin-bottom: 9px;
+                #         background-color: #111;
+                #     ">
+                #         <h4 style="margin:0; color: #fff;">{job['titulo']}</h4>
+                #         <p style="margin:0; color: #aaa;">{job['empresa']}</p>
+                #         <p style="margin:0; font-size: 12px; color: #bbb;">Nível: {job['nivel']}</p>
+                #         <p style="margin:0; font-size: 11px; color: #999;">{job['local']} • {job['fonte']}</p>
+                #     </div>
+                # </a>
+                # """, unsafe_allow_html=True)
             else:
                 st.write("Nenhuma vaga encontrada...")
         

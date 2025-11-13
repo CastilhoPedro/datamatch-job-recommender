@@ -124,12 +124,12 @@ if __name__ == '__main__':
     #     data_publicacao= datetime.date(year=2025, day=11, month=2)
     # )
 
-    # db.add_vaga(
-    #     nome_vaga='engenheiro de machine learning',
-    #     descricao_vaga='estamos em busca de um engenheiro de machine learning para desenvolver modelos preditivos e sistemas de recomendação. é preciso dominar python, sklearn e mlops.',
-    #     nome_empresa='future ai',
-    #     url='www.futureai.com/carreiras/ml-engineer',
-    #     data_publicacao= datetime.date(year=2025, day=22, month=2)
-    # )
+    db.add_vaga(
+        nome_vaga='engenheiro de machine learning',
+        descricao_vaga='estamos em busca de um engenheiro de machine learning para desenvolver modelos preditivos e sistemas de recomendação. é preciso dominar python, sklearn e mlops.',
+        nome_empresa='future ai',
+        url='www.futureai.com/carreiras/ml-engineer',
+        data_publicacao= datetime.date(year=2025, day=22, month=2)
+    )
 
 

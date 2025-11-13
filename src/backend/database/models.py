@@ -32,3 +32,5 @@ class Vagas(Base):
     data_coleta = Column(DateTime(timezone=True), default=datetime.datetime.now)
     senioridade = Column(Integer, ForeignKey('senioridade.id'), default= None, nullable= True)
     id_localizacao = Column(Integer, ForeignKey('localizacao.id'), default= None, nullable= True)
+
+
