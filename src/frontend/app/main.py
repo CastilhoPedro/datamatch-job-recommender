@@ -1,6 +1,19 @@
-from src.frontend.utils.commom import *
-from src.backend.services.handler_front import *
-from src.utils.helper import *
+# INSTRUÇÕES PARA RODAR O MÓDULO:
+# 
+#   primeiro é necessário executar o código normalmente com F5 para receber a seguinte mensagem:
+# 
+# 
+# Warning: to view this Streamlit app on a browser, run it with the following
+#   command:
+# 
+#       streamlit run (...)\datamatch-job-recommender\src\frontend\app\main.py [ARGUMENTS]
+#  
+#   então deve-se rodar o seguinte comando: py -m streamlit run "(...)\datamatch-job-recommender\src\frontend\app\main.py"
+#   
+
+from src.frontend.utils.commom import add_tag, check_inputs, remove_tag
+from src.backend.services.handler_front import process_user_data
+from src.utils.helper import ufs_dict, seniority, dates
 import streamlit as st
 
 
@@ -147,22 +160,22 @@ class App:
                     </div>
                 </a>
                 """, unsafe_allow_html=True)
-                #         st.markdown(f"""
-                # <a href="{"https://" + job['link']}" target="_blank" style="text-decoration: none;">  
-                #     <div style="
-                #         border: 1px solid #444;
-                #         border-radius: 6px;
-                #         padding: 11px;
-                #         margin-bottom: 9px;
-                #         background-color: #111;
-                #     ">
-                #         <h4 style="margin:0; color: #fff;">{job['titulo']}</h4>
-                #         <p style="margin:0; color: #aaa;">{job['empresa']}</p>
-                #         <p style="margin:0; font-size: 12px; color: #bbb;">Nível: {job['nivel']}</p>
-                #         <p style="margin:0; font-size: 11px; color: #999;">{job['local']} • {job['fonte']}</p>
-                #     </div>
-                # </a>
-                # """, unsafe_allow_html=True)
+                        st.markdown(f"""
+                <a href="{"https://" + job['link']}" target="_blank" style="text-decoration: none;">  
+                    <div style="
+                        border: 1px solid #444;
+                        border-radius: 6px;
+                        padding: 11px;
+                        margin-bottom: 9px;
+                        background-color: #111;
+                    ">
+                        <h4 style="margin:0; color: #fff;">{job['titulo']}</h4>
+                        <p style="margin:0; color: #aaa;">{job['empresa']}</p>
+                        <p style="margin:0; font-size: 12px; color: #bbb;">Nível: {job['nivel']}</p>
+                        <p style="margin:0; font-size: 11px; color: #999;">{job['local']} • {job['fonte']}</p>
+                    </div>
+                </a>
+                """, unsafe_allow_html=True)
             else:
                 st.write("Nenhuma vaga encontrada...")
         

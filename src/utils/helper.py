@@ -51,5 +51,5 @@ dates = {
     'Últimos 3 dias': date.today() - datetime.timedelta(days=3),
     'Últimos 7 dias': date.today() - datetime.timedelta(days=7),
     'Últimos 15 dias': date.today() - datetime.timedelta(days=15),
-    'Últimos 30 dias': date.today() - datetime.timedelta(days=300)
+    'Últimos 30 dias': date.today() - datetime.timedelta(days=30)
 }
