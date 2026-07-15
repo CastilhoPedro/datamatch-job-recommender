@@ -1,0 +1,5 @@
+DATABASE_URL = postgresql://(usuario):(senha)@localhost:(porta)/(nome_do_banco)
+
+
+linkedin_user = email_linkedin_bot
+linkedin_pwd = senha_linkedin_bot

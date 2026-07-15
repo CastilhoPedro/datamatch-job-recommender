@@ -14,7 +14,7 @@ def save_model(model, matrix, ids):
 
 def load_model():
     if not os.path.exists(_model_path):
-            raise FileNotFoundError(f"Modelo TF-IDF não encontrado em {_model_path}. " f"Execute o treino antes de tentar carregar.")
+        raise FileNotFoundError(f"Modelo TF-IDF não encontrado em {_model_path}. " f"Execute o treino antes de tentar carregar.")
     return joblib.load(filename=_model_path)
 
 

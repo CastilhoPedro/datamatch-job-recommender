@@ -22,8 +22,9 @@ class ScraperCommon:
         from src.backend.config.settings import linkedin_email, linkedin_pwd
         self.driver.get("https://www.linkedin.com/login/pt?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin")
         
-        self.wait_default(By.ID, 'username').send_keys(linkedin_email)
-        self.driver.find_element(By.ID, 'password').send_keys(linkedin_pwd)
+        # self.wait_default(By.XPATH, '//input[@type="email"]').send_keys(linkedin_email)
+        self.driver.find_element(By.XPATH, '//input[@type="email"]').send_keys(linkedin_email)
+        self.driver.find_element(By.ID, '//input[@type="password"]').send_keys(linkedin_pwd)
 
         self.driver.find_element(By.XPATH, "//button[@data-litms-control-urn='login-submit']").click()
 

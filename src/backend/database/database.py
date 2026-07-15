@@ -1,4 +1,4 @@
-from src.backend.database.models import *
+from src.backend.database.models import Base, Vagas, Vetores, Senioridade, datetime
 from src.backend.database.connection import *
 from sqlalchemy.exc import IntegrityError
 
@@ -19,8 +19,9 @@ class Database:
                 try:
                     db.commit()
                     print('linha adicionada com sucesso!')
-                except IntegrityError: # depois criar uma camada de logging
-                    print('ERRO de integridade do banco')
+                except IntegrityError as e: # depois criar uma camada de logging
+                    raise IntegrityError(e)
+
         return wrapper
     
 
@@ -54,7 +55,7 @@ class Database:
     def read_vaga_description_list(self) -> list[str]:
         with SessionLocal() as db:
             descr_list = db.query(Vagas.id_vaga, Vagas.descricao_vaga).where(
-                Vagas.processado == False, 
+                Vagas.processado == False, #mudar para true, certo? 
                 ) 
             return [i for i in descr_list.all()] 
     
@@ -87,10 +88,9 @@ class Database:
 
 if __name__ == '__main__':
     db = Database()
-    print(db.read_vaga_description_list())
-    
-    
-    
+    # print(db.read_vagas_list())
+
+
         
     # db.add_vaga(
     #     nome_vaga='cientista de dados pleno',
@@ -124,12 +124,12 @@ if __name__ == '__main__':
     #     data_publicacao= datetime.date(year=2025, day=11, month=2)
     # )
 
-    db.add_vaga(
-        nome_vaga='engenheiro de machine learning',
-        descricao_vaga='estamos em busca de um engenheiro de machine learning para desenvolver modelos preditivos e sistemas de recomendação. é preciso dominar python, sklearn e mlops.',
-        nome_empresa='future ai',
-        url='www.futureai.com/carreiras/ml-engineer',
-        data_publicacao= datetime.date(year=2025, day=22, month=2)
-    )
+    # db.add_vaga(
+    #     nome_vaga='engenheiro de machine learning',
+    #     descricao_vaga='estamos em busca de um engenheiro de machine learning para desenvolver modelos preditivos e sistemas de recomendação. é preciso dominar python, sklearn e mlops.',
+    #     nome_empresa='future ai',
+    #     url='www.futureai.com/carreiras/ml-engineer',
+    #     data_publicacao= datetime.date(year=2026, day=22, month=5)
+    # )
 
 

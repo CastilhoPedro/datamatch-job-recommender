@@ -68,7 +68,7 @@ def process_user_data(skills: list, localization: str, date: str, seniority: str
     date = dates[date]
     
     vec = Vectorizer()
-    list_jobs = vec.get_vagas_rank(' '.join(skills))
+    list_jobs = vec.get_idx_vagas_rank(' '.join(skills))
     
     jobs = db.read_vagas_list(
         date=date,

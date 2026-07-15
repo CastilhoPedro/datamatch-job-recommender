@@ -41,7 +41,7 @@ class Vectorizer:
     def __vectorize_input(self, input: str):
         return self.model.transform([input])
     
-    def get_vagas_rank(self, input: str):
+    def get_idx_vagas_rank(self, input: str):
         vector_input = self.__vectorize_input(input)
         
         similarity = cosine_similarity(vector_input, self.matrix)[0]
@@ -52,5 +52,5 @@ class Vectorizer:
 
 if __name__ == '__main__':
     vct = Vectorizer()
-    print(vct.get_vagas_rank("sql power bi spark"))
+    print(vct.get_idx_vagas_rank("sql power bi spark"))
     
