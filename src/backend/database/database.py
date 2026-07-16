@@ -61,16 +61,17 @@ class Database:
     
     
     def read_vagas_list(self, localization: str, seniority: str, date: datetime, ids_list: list) -> list[str]:
+        print(ids_list)
         with SessionLocal() as db:
             # descr_list = db.query(Vagas).join(Localizacao, Vagas.id_localizacao == Localizacao.id).join(Senioridade,Vagas.senioridade == Senioridade.id).where(
             #     Vagas.processado == False, 
             #     Vagas.data_publicacao >= date, 
-            #     # Localizacao.uf == localization,
+            #     # Localizacao.uf == localization,    # usar quando eu tiver conteúdo nas outras tables 
             #     # Senioridade.nivel == seniority,
             #     Vagas.id_vaga.in_(ids_list)
             #     ) 
             descr_list = db.query(Vagas).where(
-                Vagas.processado == False, 
+                Vagas.processado == False, # depois mudar pra true
                 Vagas.data_publicacao >= date, 
                 Vagas.id_vaga.in_(ids_list)
             )
@@ -82,13 +83,17 @@ class Database:
                 "local": "Teste",
                 "fonte": "Teste",
                 "nivel": i.senioridade,
-                "link": i.url
+                "link": i.url,
+                "id_vaga": i.id_vaga
                 } 
-                for i in descr_list.all()]   # no futuro precisaremos fazer uma função para extrair os vetores das vagas 
+                for i in descr_list.all()]   
 
 if __name__ == '__main__':
     db = Database()
-    # print(db.read_vagas_list())
+    print(db.read_vagas_list(localization=None,
+                             seniority=None,
+                             date=datetime.datetime(2026, 1, 1),
+                             ids_list=[31, 19, 18]))
 
 
         

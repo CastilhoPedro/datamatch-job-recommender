@@ -1,9 +1,9 @@
 import time
 from src.utils.helper import dates
-from src.backend.processing.vectorizer import Vectorizer
+from src.backend.NLP.vectorizer import Vectorizer
 from src.backend.database.database import Database
 
-db = Database()
+
 
 def get_jobs():
     # import pandas as pd
@@ -66,7 +66,8 @@ def get_jobs():
 def process_user_data(skills: list, localization: str, date: str, seniority: str):
     
     date = dates[date]
-    
+    db = Database()
+
     vec = Vectorizer()
     list_jobs = vec.get_idx_vagas_rank(' '.join(skills))
     
@@ -82,7 +83,7 @@ def process_user_data(skills: list, localization: str, date: str, seniority: str
 
 if __name__ == '__main__':
     teste = process_user_data(
-        skills=['python', 'sql'],
+        skills=['sql', 'spark'],
         localization='SP',
         date='Últimos 30 dias',
         seniority='Júnior'
