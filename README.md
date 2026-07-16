@@ -1,100 +1,149 @@
 # DataMatch 📊
 
-![Status](https://img.shields.io/badge/status-em%20planejamento-yellow)
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-blue)
+![Python](https://img.shields.io/badge/python-3.x-blue)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-Um motor de busca focado em competências para vagas na área de dados, que conecta as habilidades dos profissionais às reais exigências do mercado.
+**Um motor de busca de vagas na área de dados que ranqueia oportunidades pelas competências exigidas na descrição — não pelo título.**
 
-## 🎯 Objetivo
+Você informa suas habilidades (ex: `Python`, `Spark`, `dashboards`) e o sistema retorna vagas compatíveis, ordenadas por relevância via TF-IDF + Similaridade de Cosseno.
 
-O objetivo principal do DataMatch é esclarecer o caminho para profissionais que se sentem perdidos no mercado de dados, ajudando-os a identificar onde suas habilidades se encaixam melhor e quais vagas são mais adequadas ao seu perfil e nível técnico. Para isso, o projeto se propõe a desenvolver um motor de busca especializado que conecta profissionais a oportunidades de emprego com base em suas competências técnicas, e não apenas em títulos de vagas.
+---
 
-A motivação surgiu da dificuldade enfrentada por estudantes e profissionais da área, que frequentemente encontram inconsistências entre os títulos das vagas e as habilidades que são, de fato, exigidas.
+## 🎯 Motivação
 
-## ✨ Funcionalidades Planejadas
+Títulos de vaga na área de dados são caóticos: "Analista de Dados", "Analista de BI", "Cientista de Dados" e "Engenheiro de Analytics" frequentemente descrevem o mesmo trabalho — ou o mesmo título esconde exigências completamente diferentes. Isso deixa estudantes e profissionais perdidos sobre onde suas habilidades realmente se encaixam.
 
-* **Busca por Habilidades:** O usuário insere suas competências técnicas (ex: "Python", "Spark", "dashboards") e o sistema busca vagas compatíveis.
-* **Matching Inteligente:** Um algoritmo baseado em TF-IDF e Similaridade de Cosseno ranqueará as vagas, priorizando a relevância das habilidades inseridas pelo usuário na descrição da vaga.
-* **Web Scraping Contínuo:** O sistema coletará vagas de forma automatizada das principais plataformas (LinkedIn, Glassdoor, Catho) para manter a base de dados sempre atualizada.
-* **Interface Intuitiva:** Uma interface simples, desenvolvida com Streamlit, permitirá que o usuário filtre os resultados por nível de senioridade e data de publicação.
-* **Sistema de Feedback:** Um mecanismo de "Like" e "Dislike" será implementado para coletar feedback do usuário e, futuramente, aprimorar a precisão das recomendações.
+O **DataMatch** ataca esse problema ignorando o título e olhando para o que importa: **as competências técnicas efetivamente exigidas na descrição da vaga.**
 
-## 🛠️ Tecnologias
+---
 
-A arquitetura do projeto integra diversas ferramentas e conceitos da engenharia e ciência de dados:
+## 🏗️ Arquitetura
 
-| Categoria             | Ferramentas e Conceitos                                     |
-| :-------------------- | :---------------------------------------------------------- |
-| **Coleta de Dados** | Scrapy, BeautifulSoup, Selenium                               |
-| **Processamento e NLP** | Scikit-learn, Spacy                                       |
-| **Banco de Dados** | PostgreSQL                                                     |
-| **Interface (Frontend)**| Streamlit                                                 |
-| **Conceitos Base** | Web Scraping, Processamento de Linguagem Natural (NLP), Sistemas de Recomendação |
+O projeto segue uma **arquitetura em camadas com fluxo unidirecional**. Cada camada tem uma única responsabilidade e só conversa com a camada seguinte — o frontend nunca acessa scraper ou vetorizador diretamente, sempre passa pela camada de serviços.
 
-## 🚀 Como Executar o Projeto
+```mermaid
+flowchart LR
+    A[Scrapers<br/>Selenium] --> B[(Database<br/>PostgreSQL)]
+    B --> C[Processing<br/>NLP + TF-IDF]
+    C --> D[Services<br/>handler_front]
+    D --> E[Frontend<br/>Streamlit]
+    E -.feedback.-> D
+```
 
->  **Atenção:** O projeto ainda está em fase de planejamento. As instruções detalhadas de instalação e execução serão disponibilizadas futuramente.
+**Por que essa separação importa:** ela isola o motor de matching (regras de relevância vivem em `processing`, não no banco), permite trocar a fonte de dados sem tocar no frontend, e torna cada peça testável de forma independente. É a aplicação prática de *Separation of Concerns* e do princípio de *Dependency Direction*.
+
+### Decisões técnicas de destaque
+
+- **Persistência do modelo** com `joblib` (`.joblib`) — o vetorizador TF-IDF é treinado e salvo, não recalculado a cada busca.
+- **Repository-like layer** (`database.py`) centralizando o CRUD, com um *decorator* para eliminar boilerplate de escrita (DRY).
+- **Session management** via context managers do SQLAlchemy — sem vazamento de conexões.
+- **Segredos fora do código** — credenciais e `DATABASE_URL` lidos de variáveis de ambiente (`config/settings.py`).
+- **Schema versionado** com Alembic, em vez de `create_all` no import.
+
+---
+
+## ✨ Status das Funcionalidades
+
+| Funcionalidade | Estado |
+| :--- | :--- |
+| Busca por competências (input do usuário) | ✅ Implementado |
+| Matching TF-IDF + Similaridade de Cosseno | ✅ Implementado |
+| Ranqueamento de vagas por relevância | ✅ Implementado |
+| Interface Streamlit com cards de vaga | ✅ Implementado |
+| Filtros (senioridade, data de publicação) | ✅ Implementado |
+| Pré-processamento NLP (spaCy) | 🟡 Existe, ainda não ligado ao vetorizador |
+| Scraping (LinkedIn) | 🟡 Base em Selenium; scrapers por fonte a modularizar |
+| Scraping (Glassdoor / Catho) | ⬜ Planejado |
+| Sistema de feedback (Like / Dislike) | ⬜ Planejado |
+
+---
+
+## 🛠️ Stack
+
+| Categoria | Ferramentas |
+| :--- | :--- |
+| **Coleta de dados** | Selenium, BeautifulSoup |
+| **NLP / ML** | spaCy (`pt_core_news_sm`), scikit-learn (TF-IDF, cosine similarity) |
+| **Persistência** | PostgreSQL, SQLAlchemy, Alembic |
+| **Modelo** | joblib |
+| **Frontend** | Streamlit |
+| **Conceitos** | Web Scraping, NLP, Sistemas de Recomendação, Similaridade Vetorial |
+
+---
+
+## 🚀 Como Executar
+
+> ⚠️ Projeto em desenvolvimento. Alguns componentes (scraping multi-fonte, feedback) ainda estão em construção.
+
+**Pré-requisitos:** Python 3.x e uma instância PostgreSQL acessível.
+
+```bash
+# 1. Clonar o repositório
+git clone https://github.com/<seu-usuario>/datamatch-job-recommender.git
+cd datamatch-job-recommender
+
+# 2. Criar e ativar o ambiente virtual
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+
+# 3. Instalar dependências
+pip install -r requirements.txt
+
+# 4. Baixar o modelo de linguagem do spaCy
+python -m spacy download pt_core_news_sm
+```
+
+Configure as variáveis de ambiente num arquivo `.env` na raiz:
+
+```env
+# ⚠️ Confirme os nomes exatos das variáveis em src/backend/config/settings.py
+DATABASE_URL=postgresql://usuario:senha@localhost:5432/datamatch
+# ... demais credenciais de scraping, se aplicável
+```
+
+```bash
+# 5. Aplicar as migrações do banco (Alembic)
+alembic upgrade head          # ⚠️ ajuste conforme a config do alembic.ini
+
+# 6. Rodar a aplicação
+streamlit run src/frontend/app/main.py
+```
+
+---
 
 ## 📁 Estrutura do Projeto
 
-A estrutura de diretórios planejada para organizar o código e os artefatos do projeto é a seguinte:
-
 ```
 datamatch-job-recommender
-├─ notebooks
-│  ├─ 01_NLP_development.ipynb
-│  └─ 02_Scraper_development.ipynb
-├─ README.md
+├─ notebooks/            # Exploração: NLP e scraping
 ├─ requirements.txt
 └─ src
    ├─ backend
-   │  ├─ config
-   │  │  ├─ settings.py
-   │  │  └─ __init__.py
-   │  ├─ database
-   │  │  ├─ connection.py
-   │  │  ├─ database.py
-   │  │  ├─ models.py
-   │  │  └─ __init__.py
-   │  ├─ processing
-   │  │  ├─ nlp.py
-   │  │  ├─ utils
-   │  │  │  ├─ model_persistence.py
-   │  │  │  └─ __init__.py
-   │  │  ├─ vectorizer.py
-   │  │  └─ __init__.py
-   │  ├─ scrapers
-   │  │  ├─ common.py
-   │  │  ├─ glassdoor.py
-   │  │  ├─ linkedin.py
-   │  │  └─ __init__.py
-   │  ├─ services
-   │  │  ├─ handler_front.py
-   │  │  └─ __init__.py
-   │  ├─ utils
-   │  │  └─ __init__.py
-   │  └─ __init__.py
+   │  ├─ config/         # settings.py — env vars e segredos
+   │  ├─ database/       # connection, models, database (CRUD)
+   │  ├─ processing/     # nlp.py, vectorizer.py (TF-IDF + cosseno)
+   │  ├─ scrapers/       # common.py (Selenium), linkedin, glassdoor
+   │  ├─ services/       # handler_front.py — ponte back <-> front
+   │  └─ utils/
    ├─ frontend
-   │  ├─ app
-   │  │  ├─ main.py
-   │  │  └─ __init__.py
-   │  ├─ utils
-   │  │  ├─ commom.py
-   │  │  └─ __init__.py
-   │  └─ __init__.py
-   ├─ utils
-   │  ├─ helper.py
-   │  └─ __init__.py
-   └─ __init__.py
-
+   │  ├─ app/            # main.py — aplicação Streamlit
+   │  └─ utils/          # helpers de UI
+   └─ utils/             # helper.py — listas fixas (skills, UFs, etc.)
 ```
 
+---
 
-## 🛣️ Próximos Passos (Roadmap)
+## 🛣️ Roadmap
 
-Embora o algoritmo inicial seja baseado em TF-IDF, o plano de longo prazo inclui aprimoramentos significativos:
+- [ ] **Modularizar os scrapers** por fonte (LinkedIn, Glassdoor, Catho) sobre uma base comum; avaliar migração para Scrapy/Playwright.
+- [ ] **Conectar o pré-processamento NLP** (lematização, stopwords) ao pipeline de vetorização.
+- [ ] **Modelos contextuais:** evoluir de TF-IDF para embeddings (BERT) e capturar semântica além da sobreposição de palavras.
+- [ ] **Personalização via feedback:** usar os sinais de Like/Dislike para refinar o ranqueamento.
+- [ ] **Performance:** indexação para manter a busca rápida conforme a base de vagas cresce.
 
-* **Migração para Modelos Contextuais:** Evoluir o algoritmo de matching para modelos de linguagem mais avançados, como o BERT, para capturar melhor o contexto e a semântica das descrições das vagas.
-* **Personalização com Feedback:** Utilizar os dados de feedback (Likes/Dislikes) para treinar um modelo de recomendação mais personalizado.
-* **Otimização de Performance:** Implementar técnicas de indexação para garantir que o sistema continue performático à medida que a base de vagas crescer.
+---
 
+## 📄 Licença
 
+Distribuído sob a licença MIT. <!-- ⚠️ adicione um arquivo LICENSE se ainda não houver -->
